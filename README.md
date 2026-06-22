@@ -1,1 +1,384 @@
-# 3.github.io
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لـ دعاء 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff6f9;
+    --paper:#fffdfb;
+    --pink-soft:#ffd7e2;
+    --pink-mid:#ffadc6;
+    --rose:#e8607d;
+    --rose-deep:#c94f73;
+    --plum:#5b3350;
+    --plum-soft:#8a5a72;
+    --blush:#ff9eb7;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:18px;
+    font-family:'Tajawal',sans-serif;
+    background:radial-gradient(circle at 50% 20%,#fff0f4,#ffe1ea 55%,#ffd2e0);
+    color:var(--plum);
+    overflow:hidden;
+  }
+
+  h1,h2,h3{font-family:'Aref Ruqaa',serif;font-weight:700;margin:0;}
+  button{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--rose-deep);outline-offset:3px;border-radius:6px;}
+
+  #floaties{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+  .floaty{position:absolute;bottom:-10%;opacity:.7;filter:drop-shadow(0 4px 6px rgba(232,96,125,.3));animation:floatUp 9s linear forwards;}
+  @keyframes floatUp{0%{transform:translateY(0) rotate(0deg);}100%{transform:translate(var(--drift),-120vh) rotate(var(--spin));opacity:0;}}
+
+  .app-shell{
+    position:relative;z-index:2;
+    width:min(92vw,400px);
+    height:min(90vh,720px);
+    background:var(--paper);
+    border-radius:36px;
+    box-shadow:0 35px 70px rgba(91,51,80,.32), 0 0 0 8px #fff, 0 0 0 12px var(--pink-soft);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+
+  .dots{display:none;gap:8px;justify-content:center;padding:18px 0 6px;}
+  .dots.show{display:flex;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--pink-soft);transition:all .4s ease;}
+  .dot.active{background:var(--rose-deep);width:20px;border-radius:6px;}
+
+  .screens-wrap{flex:1;position:relative;overflow:hidden;}
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    padding:28px 30px;
+    overflow-y:auto;
+    opacity:0;transform:translateY(20px);
+    pointer-events:none;
+    transition:all .6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .screen.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+  .eyebrow{color:var(--rose-deep);font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+  .screen-title{font-size:clamp(26px,8vw,36px);color:var(--rose-deep);line-height:1.15;}
+  .screen-text{margin:18px 0 10px;font-size:15.5px;line-height:1.9;color:var(--plum-soft);max-width:300px;}
+
+  .nav-row{display:none;align-items:center;justify-content:space-between;padding:16px 24px 24px;}
+  .nav-row.show{display:flex;}
+  .nav-btn{border:none;background:transparent;color:var(--rose-deep);font-weight:700;font-size:14px;padding:10px 8px;cursor:pointer;}
+  .nav-btn.primary{
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    color:#fff;border-radius:999px;padding:12px 28px;
+    box-shadow:0 12px 25px rgba(201,79,115,.35);
+  }
+  .nav-btn.primary:hover{transform:scale(1.05) translateY(-2px);}
+
+  /* Envelope */
+  .envelope{
+    position:relative;width:220px;height:145px;margin:20px auto;
+    cursor:pointer;
+    filter:drop-shadow(0 20px 30px rgba(232,96,125,.4));
+  }
+  .envelope-back{
+    position:absolute;inset:0;
+    background:linear-gradient(135deg,#ffb3d1,#ff9ec4);
+    border-radius:18px;
+    box-shadow:0 22px 45px rgba(232,96,125,.35);
+  }
+  .envelope-flap{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:0;height:0;
+    border-left:110px solid transparent;
+    border-right:110px solid transparent;
+    border-top:82px solid var(--rose);
+    transform-origin:50% 0%;
+    transition:transform 1.2s cubic-bezier(0.6,-0.25,0.8,0.3);
+    z-index:3;
+  }
+  .envelope.open .envelope-flap{transform:translateX(-50%) rotateX(172deg);}
+
+  .seal{
+    position:absolute;left:50%;top:36%;transform:translate(-50%,-50%) scale(1);
+    width:52px;height:52px;
+    background:radial-gradient(circle,#fff,#ff9ec4);
+    border:3px solid var(--rose);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;
+    color:#fff;
+    box-shadow:0 8px 18px rgba(201,79,115,.4), inset 0 0 0 4px rgba(255,255,255,.7);
+    z-index:4;
+    transition:all .8s cubic-bezier(0.68,-0.55,0.27,1.55);
+  }
+  .envelope.open .seal{transform:translate(-50%,-50%) scale(0.15) rotate(120deg);opacity:0;}
+
+  .envelope::after{
+    content:'💕';
+    position:absolute;
+    left:50%;top:38%;
+    transform:translate(-50%,-50%);
+    font-size:26px;
+    z-index:5;
+    transition:all .8s ease;
+  }
+  .envelope.open::after{opacity:0;}
+
+  .cover-hint{
+    margin-top:22px;
+    color:var(--plum-soft);
+    font-size:14.5px;
+    font-weight:500;
+    animation:pulseHint 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseHint{0%,100%{opacity:0.65;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
+
+  .vinyl{
+    width:56px;height:56px;border-radius:50%;
+    background:radial-gradient(circle,#3a2030 0 18%, #5b3350 19% 60%, #3a2030 61% 100%);
+    margin:12px auto;animation:spin 5s linear infinite;
+    box-shadow:0 12px 25px rgba(91,51,80,.35);
+  }
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+  .romantic-note{
+    font-size:16px;line-height:2;color:var(--plum-soft);
+    background:rgba(255,220,235,.55);padding:24px 26px;
+    border-radius:24px;border:2px solid var(--pink-soft);
+    box-shadow:0 10px 25px rgba(232,96,125,.15);
+    max-width:300px;
+  }
+
+  .poem{
+    font-family:'Aref Ruqaa',serif;
+    font-size:16.5px;
+    line-height:2.1;
+    color:var(--rose-deep);
+    background:rgba(255,235,245,.7);
+    padding:26px 22px;
+    border-radius:22px;
+    max-width:300px;
+    box-shadow:0 8px 20px rgba(232,96,125,.2);
+  }
+
+  .heart-btn{
+    margin-top:12px;padding:16px 36px;
+    border:none;border-radius:999px;
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    color:#fff;font-size:16.5px;font-weight:700;
+    box-shadow:0 18px 35px rgba(201,79,115,.4);
+    transition:transform .35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .heart-btn:hover{transform:scale(1.1) translateY(-4px);}
+
+  .final-msg{
+    margin-top:26px;font-size:18px;line-height:1.9;color:var(--rose-deep);
+    font-family:'Aref Ruqaa',serif;opacity:0;transform:translateY(25px) scale(0.9);
+    transition:all .7s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .final-msg.show{opacity:1;transform:translateY(0) scale(1);}
+
+  .restart-link{
+    margin-top:24px;background:none;border:none;color:var(--plum-soft);
+    font-size:13.5px;text-decoration:underline;cursor:pointer;opacity:0;
+  }
+  .restart-link.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div id="floaties" aria-hidden="true"></div>
+
+<div class="app-shell">
+  <div class="dots" id="dots">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+
+  <div class="screens-wrap">
+
+    <!-- 0: Envelope -->
+    <div class="screen active" data-screen="0">
+      <div class="eyebrow">مفاجأة من قلبي 💌</div>
+      <h1 class="screen-title">لـ دعاء حبيبتي</h1>
+      <div class="envelope" id="envelope" role="button" tabindex="0">
+        <div class="envelope-back"></div>
+        <div class="envelope-flap"></div>
+        <div class="seal">💗</div>
+      </div>
+      <p class="cover-hint">افتحي المظروف يا أجمل دعاء... ❤️</p>
+    </div>
+
+    <!-- 1: Birthday -->
+    <div class="screen" data-screen="1">
+      <div class="eyebrow">🎂 يومك السعيد</div>
+      <h1 class="screen-title">كل سنة وأنتِ أحلى وأجمل وأعز شخص في حياتي</h1>
+      <p class="screen-text">اعشقكك مره💗💗 </p>
+    </div>
+
+    <!-- 2: Music -->
+    <div class="screen" data-screen="2">
+      <div class="eyebrow">🎶 أغنية خاصة بيكِ</div>
+      <div class="vinyl"></div>
+      <h2 class="screen-title" style="font-size:22px;">my love is mine all mine</h2>
+      <div class="music-sub">Mitski اغنيتكك💗💗</div>
+      <div class="spotify-embed">
+        <iframe id="songFrame" src="https://open.spotify.com/embed/track/3vkCueOmm7xQDoJ17W1Pm3?utm_source=generator&theme=0&si=bbaa080f85f042d0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+      <details class="change-link" style="margin-top:18px;">
+        <summary>غيري الأغنية</summary>
+        <div class="change-link-row" style="margin-top:12px;">
+          <input id="linkInput" type="text" placeholder="رابط سبوتيفاي أو يوتيوب" style="padding:10px;">
+          <button type="button" id="updateSongBtn">تحديث</button>
+        </div>
+      </details>
+    </div>
+
+    <!-- 3: Poem -->
+    <div class="screen" data-screen="3">
+      <div class="eyebrow"> شعر لحبيبتي</div>
+      <h2 class="screen-title">...</h2>
+      <div class="poem">
+        "يا فاتنَ الْعينينِ ، گيف أغْوَيْتَنِي؟<br>
+        وأصبحتُ أَهْوى عينيكِ مَالَمْ أهوَى<br>
+        هلْ خُلِقَ الْجَمالُ لِتَخْتصِرهُ عَيْناكِ<br>
+        أم خلقت عيناك لتقنعني أن لا جمال بعدها؟"
+      </div>
+    </div>
+
+
+    <!-- 4: Closing -->
+    <div class="screen" data-screen="5">
+      <div class="eyebrow">💗 للأبد</div>
+      <button class="heart-btn" id="heartBtn">اضغطي هنا يا قمري 💗</button>
+      <div class="final-msg" id="finalMsg">
+        كل سنة وأنتِ أجمل هدية ربنا أعطاني إياها يا دعاء 🎂❤️<br><br>
+        بحبك أوي أوي أوي... وبتمنى أكون سبب سعادتك كل يوم
+      </div>
+      <button class="restart-link" id="restartBtn">ابدأي من الأول 🌸</button>
+    </div>
+
+  </div>
+
+  <div class="nav-row" id="navRow">
+    <button class="nav-btn" id="backBtn">رجوع</button>
+    <span class="nav-spacer"></span>
+    <button class="nav-btn primary" id="nextBtn">التالي 💕</button>
+  </div>
+</div>
+
+<script>
+  // نفس الكود الجافاسكريبت بالكامل (مثل نسخة ميمي)
+  const floatiesEl = document.getElementById('floaties');
+  const floatySymbols = ['🌸','💗','💕','🌷','✨','💖','🕊️','🌹','💝'];
+  function spawnFloaty(){
+    const span = document.createElement('span');
+    span.className = 'floaty';
+    span.textContent = floatySymbols[Math.floor(Math.random()*floatySymbols.length)];
+    span.style.left = Math.random()*100 + '%';
+    span.style.fontSize = (15 + Math.random()*18) + 'px';
+    span.style.animationDuration = (8 + Math.random()*10) + 's';
+    span.style.setProperty('--drift', (Math.random()*160 - 80) + 'px');
+    span.style.setProperty('--spin', (Math.random()*420 - 210) + 'deg');
+    floatiesEl.appendChild(span);
+    setTimeout(()=>span.remove(), 18000);
+  }
+  setInterval(spawnFloaty, 650);
+  for(let i=0;i<8;i++) setTimeout(spawnFloaty, i*280);
+
+  const screens = [...document.querySelectorAll('.screen')];
+  let current = 0;
+  const navRow = document.getElementById('navRow');
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const dotsRow = document.getElementById('dots');
+
+  function render(){
+    screens.forEach((s,i)=> s.classList.toggle('active', i===current));
+    const onCover = current === 0;
+    navRow.classList.toggle('show', !onCover);
+    dotsRow.classList.toggle('show', !onCover);
+    backBtn.classList.toggle('ghost', current <= 1);
+    nextBtn.style.display = current === screens.length-1 ? 'none' : 'inline-block';
+  }
+
+  nextBtn.addEventListener('click', ()=>{ if(current < screens.length-1) {current++; render();}});
+  backBtn.addEventListener('click', ()=>{ if(current > 1){current--; render();}});
+
+  const envelope = document.getElementById('envelope');
+  function openEnvelope(){
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    setTimeout(()=>{ current = 1; render(); }, 850);
+  }
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();openEnvelope();}});
+
+  document.getElementById('updateSongBtn').addEventListener('click', ()=>{
+    const val = document.getElementById('linkInput').value.trim();
+    const frame = document.getElementById('songFrame');
+    if(!val) return;
+    let spMatch = val.match(/track\/([a-zA-Z0-9]+)/);
+    let ytMatch = val.match(/(?:youtu\.be\/|v=)([a-zA-Z0-9_-]{11})/);
+    if(spMatch){
+      frame.src = `https://open.spotify.com/embed/track/${spMatch[1]}?utm_source=generator&theme=0`;
+    } else if(ytMatch){
+      frame.src = `https://www.youtube.com/embed/${ytMatch[1]}`;
+    } else {
+      alert('الرابط مش مدعوم، جربي سبوتيفاي أو يوتيوب');
+    }
+  });
+
+  const heartBtn = document.getElementById('heartBtn');
+  const finalMsg = document.getElementById('finalMsg');
+  const restartBtn = document.getElementById('restartBtn');
+
+  function burstHearts(originEl){
+    const rect = originEl.getBoundingClientRect();
+    const symbols = ['💗','💖','🌸','💕','🥰','🌹','✨','💝','🦋'];
+    for(let i=0;i<28;i++){
+      const span = document.createElement('span');
+      span.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      span.style.position = 'fixed';
+      span.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*60) + 'px';
+      span.style.top = (rect.top + rect.height/2) + 'px';
+      span.style.fontSize = (18 + Math.random()*22) + 'px';
+      span.style.pointerEvents = 'none';
+      span.style.zIndex = 9999;
+      span.style.transition = 'all 1.6s cubic-bezier(0.25,0.1,0.25,1)';
+      document.body.appendChild(span);
+      const tx = (Math.random()-0.5)*360;
+      const ty = -(180 + Math.random()*300);
+      const rot = (Math.random()-0.5)*280;
+      requestAnimationFrame(()=>{span.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg)`; span.style.opacity = '0';});
+      setTimeout(()=>span.remove(), 1800);
+    }
+  }
+
+  heartBtn.addEventListener('click', ()=>{
+    finalMsg.classList.add('show');
+    restartBtn.classList.add('show');
+    burstHearts(heartBtn);
+  });
+
+  restartBtn.addEventListener('click', ()=>{
+    finalMsg.classList.remove('show');
+    restartBtn.classList.remove('show');
+    envelope.classList.remove('open');
+    current = 0;
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
